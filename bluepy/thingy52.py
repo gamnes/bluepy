@@ -247,7 +247,7 @@ class UserInterfaceService():
     serviceUUID = Nordic_UUID(USER_INTERFACE_SERVICE_UUID)
     led_char_uuid = Nordic_UUID(UI_LED_CHAR_UUID)
     btn_char_uuid = Nordic_UUID(UI_BUTTON_CHAR_UUID)
-    # To be added: EXT PIN CHAR
+    ext_pin_char_uuid = Nordic_UUID(UI_EXT_PIN_CHAR_UUID)
 
     def __init__(self, periph):
         self.periph = periph
@@ -255,7 +255,7 @@ class UserInterfaceService():
         self.led_char = None
         self.btn_char = None
         self.btn_char_cccd = None
-        # To be added: EXT PIN CHAR
+        self.ext_pin_char = None
 
     def enable(self):
         """ Enables the class by finding the service and its characteristics. """
@@ -269,6 +269,8 @@ class UserInterfaceService():
             self.btn_char = self.ui_service.getCharacteristics(self.btn_char_uuid)[0]
             ui_button_handle = self.btn_char.getHandle()
             self.btn_char_cccd = self.btn_char.getDescriptors(forUUID=CCCD_UUID)[0]
+        if self.ext_pin_char is None:
+            self.ext_pin_char = self.ui_service.getCharacteristics(self.ext_pin_char_uuid)[0]
 
     def set_led_mode_off(self):
         self.led_char.write(b"\x00", True)
@@ -303,6 +305,14 @@ class UserInterfaceService():
                 self.btn_char_cccd.write(b"\x01\x00", True)
             else:
                 self.btn_char_cccd.write(b"\x00\x00", True)
+
+    def set_ext_pin_off(self):
+        teptep = "{:02X}{:02X}{:02X}{:02X}".format(0, 0, 0, 0)
+        self.led_char.write(binascii.a2b_hex(teptep), True)
+
+    def set_ext_pin_on(self):
+        teptep = "{:02X}{:02X}{:02X}{:02X}".format(255, 255, 255, 255)
+        self.led_char.write(binascii.a2b_hex(teptep), True)
 
     def disable(self):
         set_btn_notification(False)
@@ -735,6 +745,8 @@ def main():
         # Set LED so that we know we are connected
         thingy.ui.enable()
         thingy.ui.set_led_mode_breathe(0x01, 50, 100) # 0x01 = RED
+        thingy.ui.set_ext_pin_on()
+        thingy.ui.set_ext_pin_off()
         print('LED set to breathe mode...')
 
         # Enabling selected sensors
