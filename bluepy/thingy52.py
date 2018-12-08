@@ -308,11 +308,11 @@ class UserInterfaceService():
 
     def set_ext_pin_off(self):
         teptep = "{:02X}{:02X}{:02X}{:02X}".format(0, 0, 0, 0)
-        self.led_char.write(binascii.a2b_hex(teptep), True)
+        self.ext_pin_char.write(binascii.a2b_hex(teptep), True)
 
     def set_ext_pin_on(self):
         teptep = "{:02X}{:02X}{:02X}{:02X}".format(255, 255, 255, 255)
-        self.led_char.write(binascii.a2b_hex(teptep), True)
+        self.ext_pin_char.write(binascii.a2b_hex(teptep), True)
 
     def disable(self):
         set_btn_notification(False)
