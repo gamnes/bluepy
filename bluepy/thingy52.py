@@ -307,11 +307,15 @@ class UserInterfaceService():
                 self.btn_char_cccd.write(b"\x00\x00", True)
 
     def set_ext_pin_off(self):
-        teptep = "00000000" #"{:02X}{:02X}{:02X}{:02X}".format(0, 0, 0, 0)
+        teptep = "{:02X}{:02X}{:02X}{:02X}".format(0, 0, 0, 0)
         self.ext_pin_char.write(binascii.a2b_hex(teptep), True)
 
     def set_ext_pin_on(self):
-        teptep = "FFFFFFFF" #"{:02X}{:02X}{:02X}{:02X}".format(255, 255, 255, 255)
+        teptep = "{:02X}{:02X}{:02X}{:02X}".format(255, 255, 255, 255)
+        self.ext_pin_char.write(binascii.a2b_hex(teptep), True)
+
+    def set_ext_pin_state(self, mos1, mos2, mos3, mos4):
+        teptep = "{:02X}{:02X}{:02X}{:02X}".format(mos1, mos2, mos3, mos4)
         self.ext_pin_char.write(binascii.a2b_hex(teptep), True)
 
     def disable(self):
